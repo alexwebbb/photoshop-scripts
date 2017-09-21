@@ -6,11 +6,11 @@ var layNum;
 var aLay = new Array(doc.layers.length);
 var layerParent = doc.activeLayer.parent;
 
-var isParent = false;
+var itIsAParent = false;
 
 if ( layerParent !== doc ) {
 	doc.activeLayer = layerParent;
-	isParent = true;
+	itIsAParent = true;
 }
 	
 for(var i=0; i < doc.layers.length; i++) {
@@ -24,6 +24,13 @@ for(var i=0; i < doc.layers.length; i++) {
 if(doc.layers[layNum+1].name.indexOf("Layer") >= 0) {
 
     doc.activeLayer.visible = false;
-    doc.activeLayer = isParent ? doc.layers[layNum+1].layers[0] : doc.layers[layNum+1];
-    doc.activeLayer.parent.visible = true;
+
+    if(itIsAParent) {
+    	doc.activeLayer = doc.layers[layNum+1].layers[0];
+    	doc.activeLayer.parent.visible = true;
+    } else {
+    	doc.activeLayer = doc.layers[layNum+1];
+    	doc.activeLayer.visible = true;
+    }
+    
 };
