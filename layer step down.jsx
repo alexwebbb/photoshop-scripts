@@ -2,35 +2,29 @@
 
 var doc = activeDocument;
 var layNum;
-
-var aLay = new Array(doc.layers.length);
 var layerParent = doc.activeLayer.parent;
-
 var itIsAParent = false;
 
-if ( layerParent !== doc ) {
-	doc.activeLayer = layerParent;
-	itIsAParent = true;
+if ( layerParent !== doc ) itIsAParent = true;
+    
+for (var i = doc.layers.length - 1; i >= 0; i--) {
+    if(doc.layers[i].name.match((itIsAParent ? doc.activeLayer.parent.name : doc.activeLayer.name))) {
+        layNum = i;
+        break;
+    }
 }
-	
-for(var i=0; i < doc.layers.length; i++) {
-	// get the name for that layer and 
-	// assign to equivalent position in the array
-    aLay[i] = doc.layers[i].name;
-    // if layer is active one it gets stored as the current layer
-    if(aLay[i] == doc.activeLayer.name) { layNum = i }
-};
 
-if(doc.layers[layNum+1].name.indexOf("Layer") >= 0) {
+if(!doc.layers[layNum+1].name.match("root")) {
 
-    doc.activeLayer.visible = false;
+    (itIsAParent ? doc.activeLayer.parent : doc.activeLayer).visible = false;
 
     if(itIsAParent) {
-    	doc.activeLayer = doc.layers[layNum+1].layers[0];
+    	doc.activeLayer = doc.layers[layNum+1].layers[1];
     	doc.activeLayer.parent.visible = true;
     } else {
     	doc.activeLayer = doc.layers[layNum+1];
     	doc.activeLayer.visible = true;
     }
-    
-};
+
+    doc.activeLayer.pixelsLocked = false;
+} 
